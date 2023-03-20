@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="productManagementSys.css">
+    <title>Product management system</title>
+</head>
+
+<body style="margin: 20px; background-color: bisque;">
+    <div style="border: 3px solid red; border-radius: 20px; height: fit-content">
+        <form onsubmit="return false;" id="inputForm">
+            <center>
+                <h1><u>Fill out the following details:</u></h1>
+            </center>
+            <div class="formElements">
+                <table id="tableStyleOnly">
+                    <tr>
+                        <td> Product Id: </td>
+                        <td><input type="text" placeholder="Product Id" id="pid"></td>
+                    </tr>
+                    <tr>
+                        <td> Product Name: </td>
+                        <td><input type="text" placeholder="Product Name" id="ProductName"> </td>
+                    </tr>
+                    <tr>
+                        <td> Product Image: </td>
+                        <td><input type="file" id="ProductImage"> </td>
+                    </tr>
+                    <tr>
+                        <td> Product Price: </td>
+                        <td><input type="number" placeholder="Product Price" id="productPrice"> </td>
+                    </tr>
+                    <tr>
+                        <td> Description: </td>
+                        <td><input type="text" placeholder="Product Description" id="productDescription"> </td>
+                        <!-- <td><input type="text" required hidden > </td> -->
+                    </tr>
+                </table>
+            </div>
+            <!-- <button> submit </button> -->
+            <input type="submit" value="submit" onclick="submitButtonClicked()" id="submitButton">
+            <button id="updateButton">Update</button>
+            <span style="margin-left: 23%;">SortBy:</span>
+            <select id="sort" onchange="sortOptionSelected()" >
+                <option value="None" hidden>None</option>
+                <option value="ProductId">Product Id</option>
+                <option value="ProductName">Product Name</option>
+                <option value="productPrice">Product Price</option>
+            </select>
+        </form>
+    </div>
+    <div>
+        <input type="text" oninput="filterTextChanged()" id="filterInputbar" placeholder="Enter id to filter the database" style="margin-top: 40px; margin-left: 25px; height: 25px;font-size: 15px;width: 590px;">
+        <table id="databaseTable">
+            <thead>
+                <tr>
+                    <th>Product Id</th>
+                    <th>Product Name</th>
+                    <th>Product Image</th>
+                    <th>Product Price</th>
+                    <th>Product Description</th>
+                    <th>Edit/Delete</th>
+                </tr>
+            </thead>
+            <tbody id="dbtableInner">
+            </tbody>
+
+        </table>
+        <button onclick="clearButtonClicked()" id="clear">Clear Entire Database</button>
+    </div>
+    <script src="productSysLogic.js"></script>
+</body>
+
+</html>
