@@ -11,7 +11,7 @@
 
 <body style="margin: 20px; background-color: bisque;">
     <div style="border: 3px solid red; border-radius: 20px; height: fit-content">
-        <form onsubmit="return false;" id="inputForm">
+        <form onsubmit="return false;" id="inputForm" autocomplete="off">
             <center>
                 <h1><u>Fill out the following details:</u></h1>
             </center>
@@ -53,7 +53,7 @@
         </form>
     </div>
     <div>
-        <input type="text" oninput="filterTextChanged()" id="filterInputbar" placeholder="Enter id to filter the database" style="margin-top: 40px; margin-left: 25px; height: 25px;font-size: 15px;width: 590px;">
+        <input type="text" onchange="filterTextChanged()" onkeyup="forBackspaceInFilter()" id="filterInputbar" placeholder="Enter id to filter the database" style="margin-top: 40px; margin-left: 25px; height: 25px;font-size: 15px;width: 590px;">
         <table id="databaseTable">
             <thead>
                 <tr>

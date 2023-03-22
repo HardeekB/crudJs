@@ -8,8 +8,8 @@ function validateFormInput() {
     // var tempProductImage = document.getElementById("ProductImage").value;
 
     if (tempPid == "" || tempProductName == "" || tempProductPrice == "" || tempProductDescription == "") {
-        alert("Please fill all the details");
-        // alert("false");
+        // alert("Please fill all the details");
+        
         return false;
     }
     else {
@@ -17,7 +17,17 @@ function validateFormInput() {
         return true;
     }
 }
-
+function validateFormInput2(){
+    validateFormInput();
+    
+    if(document.getElementById("ProductImage").value == null || document.getElementById("ProductImage").value == "" || document.getElementById("ProductImage").value == undefined || validateFormInput() == false){
+        window.alert("Please fill all the details");
+        return;
+    }
+    else{
+        return true;
+    }
+}
 function clearButtonClicked() {
     localStorage.clear();
     displayData();
@@ -27,13 +37,16 @@ function submitButtonClicked() {
     if (typeof (Storage) == "undefined") {
         window.alert("Local Storage not supported");
     }
-    if (validateFormInput() == true) {
+    
+    if (validateFormInput2() == true) {
+        // window.alert("inside");
         let productId = document.getElementById("pid").value;
         let productName = document.getElementById("ProductName").value;
         let productImage = document.getElementById("ProductImage").files[0].name;
         let productPrice = document.getElementById("productPrice").value;
         let productDescription = document.getElementById("productDescription").value;
         let productArray;
+        
         if (localStorage.getItem("productArrayStored") != null) {
 
             productArray = JSON.parse(localStorage.getItem("productArrayStored"));
@@ -150,7 +163,10 @@ function filterTextChanged() {
     }
 }
 
-
+function forBackspaceInFilter(){
+    displayData();
+    filterTextChanged();
+}
 function sortOptionSelected(){
     let optValue = document.getElementById('sort').value;
     // console.log(optValue);
