@@ -6,28 +6,46 @@ function validateFormInput() {
     let tempProductPrice = document.getElementById("productPrice").value;
     let tempProductDescription = document.getElementById("productDescription").value;
     // var tempProductImage = document.getElementById("ProductImage").value;
+    let alert1 = "please add the following details:";
+    let flag = 1;
+    if (tempPid == "") {
+        flag = 0;
+        alert1 += "product id,";
+    }
+    if (tempProductName == "") {
+        flag = 0;
+        alert1 += "Product name,";
+    }
+    if (tempProductPrice == "") {
+        flag = 0;
+        alert1 += "product price,";
+    }
+    if (tempProductDescription == "") {
+        flag = 0;
+        alert1 += "product description";
+    }
 
-    if (tempPid == "" || tempProductName == "" || tempProductPrice == "" || tempProductDescription == "") {
-        // alert("Please fill all the details");
-        
+
+    if (flag == 0) {
+        window.alert(alert1);
         return false;
     }
     else {
-        // alert("validate");
         return true;
     }
 }
-function validateFormInput2(){
+function validateFormInput2() {
+
     validateFormInput();
-    
-    if(document.getElementById("ProductImage").value == null || document.getElementById("ProductImage").value == "" || document.getElementById("ProductImage").value == undefined || validateFormInput() == false){
-        window.alert("Please fill all the details");
-        return;
+    if (document.getElementById("ProductImage").value == null || document.getElementById("ProductImage").value == "" || document.getElementById("ProductImage").value == undefined || validateFormInput() == false) {
+        // window.alert("Please fill all the details");
+        return false;
     }
-    else{
+    else {
         return true;
     }
 }
+
 function clearButtonClicked() {
     localStorage.clear();
     displayData();
@@ -37,35 +55,59 @@ function submitButtonClicked() {
     if (typeof (Storage) == "undefined") {
         window.alert("Local Storage not supported");
     }
-    
+
     if (validateFormInput2() == true) {
         // window.alert("inside");
         let productId = document.getElementById("pid").value;
         let productName = document.getElementById("ProductName").value;
-        let productImage = document.getElementById("ProductImage").files[0].name;
+        let productImage = document.getElementById("ProductImage").files[0];
         let productPrice = document.getElementById("productPrice").value;
         let productDescription = document.getElementById("productDescription").value;
         let productArray;
-        
-        if (localStorage.getItem("productArrayStored") != null) {
+        var imageUrl;
+        const reader = new FileReader();
 
-            productArray = JSON.parse(localStorage.getItem("productArrayStored"));
-        }
-        else {
-            productArray = [];
-        }
-        productArray.push({
-            productId: productId,
-            productName: productName,
-            productImage: productImage,
-            productPrice: productPrice,
-            productDescription: productDescription,
-        })
+        // setInterval(1000);
+        // reader.onload = function (e) {
+        //    imageUrl = e.target.result;
+        //   };
+        reader.readAsDataURL(productImage);
+        reader.addEventListener('load', () => {
+            let imageUrl1;
+            imageUrl1 = reader.result;
+            setValue(imageUrl1);
 
-        localStorage.setItem("productArrayStored", JSON.stringify(productArray));
-        console.log(JSON.parse(localStorage.getItem("productArrayStored")));
-        displayData();
-        document.forms["inputForm"].reset();
+
+
+            function setValue(imgUrl) {
+                imageUrl = imgUrl;
+                // window.alert(imageUrl);
+            }
+            // alert(imageUrl);
+
+
+
+            if (localStorage.getItem("productArrayStored") != null) {
+
+                productArray = JSON.parse(localStorage.getItem("productArrayStored"));
+            }
+            else {
+                productArray = [];
+            }
+
+            productArray.push({
+                productId: productId,
+                productName: productName,
+                productImage: imageUrl,
+                productPrice: productPrice,
+                productDescription: productDescription,
+            })
+
+            localStorage.setItem("productArrayStored", JSON.stringify(productArray));
+            console.log(JSON.parse(localStorage.getItem("productArrayStored")));
+            displayData();
+            document.forms["inputForm"].reset();
+        });
     }
 }
 
@@ -105,6 +147,8 @@ function editButtonClicked(index) {
     // document.getElementById("ProductImage").files[0].setItem.name = "c://fakepath/" + productArrayinUpdate[index].productImage.name;
     document.getElementById("productDescription").value = productArrayofUpdate[index].productDescription;
     // alert("added data");
+
+
     document.querySelector("#updateButton").onclick = function () {
         // alert("inside event");
         if (validateFormInput() == true) {
@@ -114,14 +158,28 @@ function editButtonClicked(index) {
             productArrayofUpdate[index].productPrice = document.getElementById("productPrice").value;
             productArrayofUpdate[index].productDescription = document.getElementById("productDescription").value;
             if (document.getElementById("ProductImage").files[0]) {
-                productArrayofUpdate[index].productImage = document.getElementById("ProductImage").files[0].name;
+                const reader = new FileReader();
+                let tempStore = document.getElementById("ProductImage").files[0];
+                reader.readAsDataURL(tempStore);
+                reader.addEventListener('load', () => {
+                    let imageUrl1;
+                    imageUrl1 = reader.result;
+                    // alert(imageUrl1);
+                    productArrayofUpdate[index].productImage = imageUrl1;
+                    localStorage.setItem("productArrayStored", JSON.stringify(productArrayofUpdate));
+                    displayData();
+                    document.forms["inputForm"].reset();
+                    document.getElementById("submitButton").style.display = "block";
+                    document.getElementById("updateButton").style.display = "none";
+                })
             }
 
             // else{
             //     alert("image not updated");
             // }
-
-            localStorage.setItem("productArrayStored", JSON.stringify(productArrayofUpdate));
+            else {
+                localStorage.setItem("productArrayStored", JSON.stringify(productArrayofUpdate));
+            }
             displayData();
             document.forms["inputForm"].reset();
             document.getElementById("submitButton").style.display = "block";
@@ -137,10 +195,12 @@ function editButtonClicked(index) {
 
 function deleteButtonClicked(index) {
     // alert("delete");
-    let productArraytoDelete = JSON.parse(localStorage.getItem("productArrayStored"));
-    productArraytoDelete.splice(index, 1);
-    localStorage.setItem("productArrayStored", JSON.stringify(productArraytoDelete));
-    displayData();
+    if (window.confirm("Are you sure you want to delete?") == true) {
+        let productArraytoDelete = JSON.parse(localStorage.getItem("productArrayStored"));
+        productArraytoDelete.splice(index, 1);
+        localStorage.setItem("productArrayStored", JSON.stringify(productArraytoDelete));
+        displayData();
+    }
 }
 
 
@@ -148,46 +208,45 @@ function filterTextChanged() {
     let filterInputbar = document.getElementById("filterInputbar").value.toUpperCase();
     let dbTable = document.getElementById("databaseTable");
     let tr = dbTable.getElementsByTagName('tr');
-    for(let row = 1; row < tr.length; row++){
+    for (let row = 1; row < tr.length; row++) {
         let td = tr[row].getElementsByTagName("td")[0];
-        if(td != null){
+        if (td != null) {
             let tdvalue = td.textContent || td.innerHTML;
-            if(tdvalue.toUpperCase().indexOf(filterInputbar) <= -1){
+            if (tdvalue.toUpperCase().indexOf(filterInputbar) <= -1) {
                 tr[row].style.display = "none";
             }
         }
     }
-    if(filterInputbar == null || filterInputbar == "")
-    {
+    if (filterInputbar == null || filterInputbar == "") {
         displayData();
     }
 }
 
-function forBackspaceInFilter(){
+function forBackspaceInFilter() {
     displayData();
     filterTextChanged();
 }
-function sortOptionSelected(){
+function sortOptionSelected() {
     let optValue = document.getElementById('sort').value;
     // console.log(optValue);
     let productArraytoSort = JSON.parse(localStorage.getItem("productArrayStored"));
-    switch(optValue){
-        case "ProductId" : productArraytoSort.sort(function (a,b) {return a.productId - b.productId} );
-        break;
+    switch (optValue) {
+        case "ProductId": productArraytoSort.sort(function (a, b) { return a.productId - b.productId });
+            break;
 
-        case "ProductName" : productArraytoSort.sort(function(a, b){
+        case "ProductName": productArraytoSort.sort(function (a, b) {
             let x = a.productName.toLowerCase();
             let y = b.productName.toLowerCase();
-            if (x < y) {return -1;}
-            if (x > y) {return 1;}
+            if (x < y) { return -1; }
+            if (x > y) { return 1; }
             return 0;
-            });
-        break;
+        });
+            break;
 
-        case "productPrice" : productArraytoSort.sort(function (a,b) {return a.productPrice - b.productPrice} );
-        break;
+        case "productPrice": productArraytoSort.sort(function (a, b) { return a.productPrice - b.productPrice });
+            break;
     }
-    localStorage.setItem("productArrayStored",JSON.stringify(productArraytoSort));
+    localStorage.setItem("productArrayStored", JSON.stringify(productArraytoSort));
     displayData();
 }
 
